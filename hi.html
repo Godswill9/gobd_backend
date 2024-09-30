@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Signup</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        table {
+            margin: 0 auto;
+            width: 600px;
+            border-collapse: collapse;
+        }
+        .header {
+            padding: 20px 0;
+            text-align: center;
+            background-color: blue;
+        }
+        .header h1 {
+            color: #fff;
+            margin: 0;
+        }
+        .content {
+            background-color: #fff;
+            padding: 20px;
+        }
+        .content h2, .content h3, .content p {
+            color: #333;
+            margin: 10px 0;
+        }
+        .footer {
+            padding: 10px;
+            text-align: center;
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <table role="presentation">
+        <tr>
+            <td class="header">
+                <h1>User Signup</h1>
+            </td>
+        </tr>
+        <tr>
+            <td class="content">
+                <h2>Thanks for signing up!</h2>
+                <p>Here's your verification code: <b>${code}</b></p>
+                <p>You will require it in the login process.</p>
+                <h3>Company Details:</h3>
+                <p>
+                    Asoro Automotive<br>
+                    62 Old Benin Agbor Rd<br>
+                    Benin City, Nigeria<br>
+                    Phone: +234-810-596-3081<br>
+                    Email: support@asoroautomotive.com
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td class="footer">
+                &copy; 2023 Asoro Automotive
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
