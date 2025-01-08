@@ -22,10 +22,6 @@ const signup = async (req, res, next) => {
     email,
     password,
     phoneNumber,
-    car_make,
-    car_model,
-    car_year,
-    engine_type,
     code,
   } = req.body;
 
@@ -66,12 +62,9 @@ const signup = async (req, res, next) => {
           email,
           password,
           phone,
-          car_make,
-          car_model,
-          car_year,
-          engine_type,
           created_at,
-          updated_at
+          updated_at,
+          seen
         ) VALUES ?`;
         
         var values = [
@@ -81,12 +74,9 @@ const signup = async (req, res, next) => {
             email,
             hashed,
             phoneNumber,
-            car_make,
-            car_model,
-            car_year,
-            engine_type,
             date,
             date,
+            "NOT_SEEN",
           ],
         ];
         
@@ -105,60 +95,61 @@ const signup = async (req, res, next) => {
           email
         ) VALUES ?`;
         
-        var val = [[codeId, code, "NOT-USED", userId, email]];
+        // var val = [[codeId, code, "NOT-USED", userId, email]];-----this is the real one, but has to be changed to for now----
+        var val = [[codeId, code, "USED", userId, email]];
         database.query(createCode, [val], (err, result) => {
           if (err) throw err;
           console.log(result);
         });
 
         // Send code mail
-        let transporter = nodemailer.createTransport({
-          host: "localhost",
-          service: "gmail",
-          port: 3010,
-          secure: false,
-          auth: {
-            user: "guche9@gmail.com",
-            pass: "pgthdihimvbxvmyc",
-          },
-          tls: {
-            rejectUnauthorized: false,
-          },
-        });
+        // let transporter = nodemailer.createTransport({
+        //   host: "localhost",
+        //   service: "gmail",
+        //   port: 3010,
+        //   secure: false,
+        //   auth: {
+        //     user: "guche9@gmail.com",
+        //     pass: "havpcuiuiboqsrmn",
+        //   },
+        //   tls: {
+        //     rejectUnauthorized: false,
+        //   },
+        // });
 
-        // Sending the auth mail
-        let info = transporter.sendMail({
-          from: '"Uchechukwu" <guche9@gmail.com>',
-          to: `${email}`,
-          subject: "Welcome new user!",
-          html: `
-          <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
-          <table role="presentation" border="0" cellspacing="0" cellpadding="0" align="center" width="600" style="margin: 0 auto;">
-            <tr>
-              <td style="padding: 20px 0; text-align: center; background-color: blue;">
-                <h1 style="color: #fff;">User signup</h1>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding: 20px;">
-                <div style="background-color: #fff; padding: 20px;">
-                  <h2 style="color: #333;">Thanks for signing up!</h2>
-                  <p style="color: #333;">Here's your verification code. <b>${code}</b></p>
-                  <p style="color: #333;">You will require it in the login process</p>
-                  <h3 style="color: #333;">Company Details:</h3>
-                  <p style="color: #333;">Asoro Automotive<br>62 Old Benin Agbor Rd<br>Benin City – Nigeria.<br>Phone: +234-810-596-3081<br>Email: support@asoroautomotive.com</p>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding: 10px; text-align: center; background-color: #333; color: #fff;">
-                &copy; 2023 Asoro Automotive
-              </td>
-            </tr>
-          </table>
-        </body>
-          `,
-        });
+        // // Sending the auth mail
+        // let info = transporter.sendMail({
+        //   from: '"Uchechukwu" <guche9@gmail.com>',
+        //   to: `${email}`,
+        //   subject: "Welcome new user!",
+        //   html: `
+        //   <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+        //   <table role="presentation" border="0" cellspacing="0" cellpadding="0" align="center" width="600" style="margin: 0 auto;">
+        //     <tr>
+        //       <td style="padding: 20px 0; text-align: center; background-color: blue;">
+        //         <h1 style="color: #fff;">User signup</h1>
+        //       </td>
+        //     </tr>
+        //     <tr>
+        //       <td style="padding: 20px;">
+        //         <div style="background-color: #fff; padding: 20px;">
+        //           <h2 style="color: #333;">Thanks for signing up!</h2>
+        //           <p style="color: #333;">Here's your verification code. <b>${code}</b></p>
+        //           <p style="color: #333;">You will require it in the login process</p>
+        //           <h3 style="color: #333;">Company Details:</h3>
+        //           <p style="color: #333;">Asoro Automotive<br>62 Old Benin Agbor Rd<br>Benin City – Nigeria.<br>Phone: +234-810-596-3081<br>Email: support@asoroautomotive.com</p>
+        //         </div>
+        //       </td>
+        //     </tr>
+        //     <tr>
+        //       <td style="padding: 10px; text-align: center; background-color: #333; color: #fff;">
+        //         &copy; 2023 Asoro Automotive
+        //       </td>
+        //     </tr>
+        //   </table>
+        // </body>
+        //   `,
+        // });
       }
     });
   }
@@ -203,24 +194,22 @@ const login = async (req, res, next) => {
                     {
                       email: result[0].email,
                       id: result[0].id,
-                      subscription_status: result[0].subscription_status,
-                      car_make:result[0].car_make, 
-                      car_model:result[0].car_model, 
-                      car_year:result[0].car_year, 
-                      engine_type:result[0].engine_type,
                       username: result[0].username,
                     },
                     process.env.ACCESS_TOKEN_SECRET,
-                    { expiresIn: "10d" }
+                    { expiresIn: "30d" }
                   );
-                  res.cookie("jwt_user", accessToken, {
-                    maxAge: 3600 * 1000 * 24 * 365 * 100,
-                    withCredentials: true,
+                  res.cookie("client_side_chat", accessToken, {
+                    maxAge: 30 * 24 * 3600 * 1000,
                     httpOnly: true,
+                    sameSite: 'None', // Set SameSite attribute to None
+                    secure: true, // This should be true if you're using SameSite=None
                   });
+                  
                   const allObj = {
                     ...result[0],
                     status: "success",
+                    // accessToken:accessToken,
                     redirect: "true",
                   };
                   res.json(allObj);
@@ -252,6 +241,18 @@ const verifyCode = async (req, res, next) => {
   });
 };
 
+//verify userSeen
+const editChatUserSeen = async (req, res, next) => {
+  var { userId } = req.body;
+  // console.log(req.body);
+  var query = `UPDATE users SET seen="SEEN" WHERE id = '${userId}';`;
+  database.query(query, (err, result) => {
+    if (err) throw err;
+    res.status(200).json({ message: "notification read" });
+  });
+};
+
+
 // };
 
-module.exports = { signup, login, verifyCode };
+module.exports = { signup, login, verifyCode, editChatUserSeen };
