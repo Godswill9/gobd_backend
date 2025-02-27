@@ -58,11 +58,25 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-multer({
-  limits: { fieldSize: 20 * 1024 * 1024 },
-});
-app.use(multer().any());
+// multer({
+//   limits: { fieldSize: 20 * 1024 * 1024 },
+// });
+// app.use(multer().any());
 
+const upload = multer({
+  storage: multer.memoryStorage(), // Store the file in memory (or diskStorage as needed)
+  limits: { fileSize: 20 * 1024 * 1024 }, // Set the file size limit (20MB in this case)
+  fileFilter: (req, file, cb) => {
+    const allowedMimeTypes = ['image/jpeg', 'image/jpg','image/webp', 'image/png', 'image/gif']; // Allowed file types
+    if (allowedMimeTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type'), false);
+    }
+  },
+});
+
+app.use(upload.any()); 
 
 
 // Routes for the API

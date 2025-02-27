@@ -123,107 +123,125 @@ const editMessageSeenByAdmin = async (req, res, next) => {
   };
 
   const sendMessageMail = async (req, res, next) => {
-    const { message, userEmail } = req.body;
-    console.log(req.body)
+    const { message, userEmail, type } = req.body;
+    console.log(req.body);
   
-    // // Send code mail
-let transporter = nodemailer.createTransport({
-    host: "premium30.web-hosting.com", // Replace with Namecheap SMTP server
-    port: 465,
-      secure:true,
-    auth: {
-      user: "support@asoroautomotive.com", // Replace with your client's email address
-      pass: "@Automobile1998", // Replace with your client's email password
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-  });
+    // Set up transporter for sending emails
+    let transporter = nodemailer.createTransport({
+      host: "premium30.web-hosting.com", // Replace with Namecheap SMTP server
+      port: 465,
+      secure: true,
+      auth: {
+        user: "support@asoroautomotive.com", // Replace with your client's email address
+        pass: "@Automobile1998", // Replace with your client's email password
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+    });
   
-          let info = transporter.sendMail({
-            // from: '"Asoro automotive" <guche9@gmail.com>',
-            from: '"Asoro Automotive" <support@asoroautomotive.com>',
-            to: `${userEmail}`,
-            subject: "You have a new message!",
-            html: `
-            <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
-            <table role="presentation" border="0" cellspacing="0" cellpadding="0" align="center" width="600" style="margin: 0 auto;">
-              <tr>
-                <td style="padding: 20px 0; text-align: center; background-color: blue;">
-                  <h1 style="color: #fff;">New message</h1>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 20px;">
-                  <div style="background-color: #fff; padding: 20px;">
-                    <h2 style="color: #333;">Message reply!</h2>
-                    <p style="color: #333;font-size:18px;">${message}</b></p>
-                        <a href="https://web-1mpd.onrender.com/chat" style="display: inline-block; padding: 10px 20px; margin-top: 20px; background-color: blue; color: white; text-decoration: none; border-radius: 5px;">Reply</a>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 10px; text-align: center; background-color: #333; color: #fff;">
-                  &copy; 2023 Asoro Automotive
-                </td>
-              </tr>
-            </table>
-          </body>
-            `,
-          });
-};
+    // Determine the email content based on the message type
+    let emailContent = type === "image"
+      ? `<p style="color: #333; font-size: 18px;">A file has been sent to the chat.</p>`
+      : `<p style="color: #333; font-size: 18px;">${message}</p>`;
+  
+    // Send email
+    let info = await transporter.sendMail({
+      from: '"Asoro Automotive" <support@asoroautomotive.com>',
+      to: `${userEmail}`,
+      subject: "You have a new message!",
+      html: `
+        <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+          <table role="presentation" border="0" cellspacing="0" cellpadding="0" align="center" width="600" style="margin: 0 auto;">
+            <tr>
+              <td style="padding: 20px 0; text-align: center; background-color: blue;">
+                <h1 style="color: #fff;">New message</h1>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 20px;">
+                <div style="background-color: #fff; padding: 20px;">
+                  <h2 style="color: #333;">Message reply!</h2>
+                  ${emailContent}
+                  <a href="https://web-1mpd.onrender.com/chat" style="display: inline-block; padding: 10px 20px; margin-top: 20px; background-color: blue; color: white; text-decoration: none; border-radius: 5px;">Reply</a>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; text-align: center; background-color: #333; color: #fff;">
+                &copy; 2023 Asoro Automotive
+              </td>
+            </tr>
+          </table>
+        </body>
+      `,
+    });
+  
+    console.log("Email sent:", info.messageId);
+  };
+  
   const sendMessageMailToAdmin = async (req, res, next) => {
-    const { message, sender } = req.body;
-    console.log(req.body)
+    const { message, sender, type } = req.body;
+    console.log(req.body);
   
-    // // Send code mail
-let transporter = nodemailer.createTransport({
-    host: "premium30.web-hosting.com", // Replace with Namecheap SMTP server
-    port: 465,
-      secure:true,
-    auth: {
-      user: "support@asoroautomotive.com", // Replace with your client's email address
-      pass: "@Automobile1998", // Replace with your client's email password
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-  });
+    // Capitalize sender name
+    const formattedSender = sender.charAt(0).toUpperCase() + sender.slice(1);
   
-          let info = transporter.sendMail({
-            // from: '"Asoro automotive" <guche9@gmail.com>',
-            from: '"Asoro Automotive" <support@asoroautomotive.com>',
-            to: [`support@asoroautomotive.com`, "ghycinth9@gmail.com"],
-            subject: "You have a new message!",
-            html: `
-            <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
-            <table role="presentation" border="0" cellspacing="0" cellpadding="0" align="center" width="600" style="margin: 0 auto;">
-              <tr>
-                <td style="padding: 20px 0; text-align: center; background-color: blue;">
-                  <h1 style="color: #fff;">New message</h1>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 20px;">
-                  <div style="background-color: #fff; padding: 20px;">
-                    <h2 style="color: #333;">Message reply!</h2>
-                    <p style="color: #333;font-size:18px;">${message}</b></p>
-                    <a href="https://web-1mpd.onrender.com/chat" style="display: inline-block; padding: 10px 20px; margin-top: 20px; background-color: blue; color: white; text-decoration: none; border-radius: 5px;">Reply</a>
-                   <p style="color: #333;font-size:11px; font-weight:bold;">From ${sender}</b></p>
-                    </div>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 10px; text-align: center; background-color: #333; color: #fff;">
-                  &copy; 2023 Asoro Automotive
-                </td>
-              </tr>
-            </table>
-          </body>
-            `,
-          });
-};
-
+    // Set up transporter for sending emails
+    let transporter = nodemailer.createTransport({
+      host: "premium30.web-hosting.com", // Replace with Namecheap SMTP server
+      port: 465,
+      secure: true,
+      auth: {
+        user: "support@asoroautomotive.com", // Replace with your client's email address
+        pass: "@Automobile1998", // Replace with your client's email password
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+    });
+  
+    // Determine the email content based on the message type
+    let emailContent = type === "image"
+      ? `<p style="color: #333; font-size: 18px;">An image has been sent to the chat.</p>`
+      : `<p style="color: #333; font-size: 18px;">${message}</p>`;
+  
+    // Send email
+    let info = await transporter.sendMail({
+      from: '"Asoro Automotive" <support@asoroautomotive.com>',
+      to: ["support@asoroautomotive.com", "ghycinth9@gmail.com"],
+      subject: "You have a new message!",
+      html: `
+        <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+          <table role="presentation" border="0" cellspacing="0" cellpadding="0" align="center" width="600" style="margin: 0 auto;">
+            <tr>
+              <td style="padding: 20px 0; text-align: center; background-color: blue;">
+                <h1 style="color: #fff;">New message</h1>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 20px;">
+                <div style="background-color: #fff; padding: 20px;">
+                  <h2 style="color: #333;">Message Received</h2>
+                  ${emailContent}
+                  <a href="https://web-1mpd.onrender.com/chat" style="display: inline-block; padding: 10px 20px; margin-top: 20px; background-color: blue; color: white; text-decoration: none; border-radius: 5px;">Reply</a>
+                  <p style="color: #333; font-size: 11px; font-weight: bold;">From: ${formattedSender}</p>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; text-align: center; background-color: #333; color: #fff;">
+                &copy; 2023 Asoro Automotive
+              </td>
+            </tr>
+          </table>
+        </body>
+      `,
+    });
+  
+    console.log("Admin email sent:", info.messageId);
+  };
+  
 // Cloudinary configuration
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -303,8 +321,8 @@ const uploadFiles = async (req, res, next) => {
       senderId,    // Sender ID
       receiverId,  // Receiver ID
       date,        // Time received
-      "NOT_SEEN",  // Seen by admin
-      "SEEN"       // Seen by user
+      senderId == "admin" ? "SEEN" : "NOT_SEEN", // Seen by admin
+      senderId == "admin" ? "NOT-SEEN" : "SEEN" //Seen by user
     ]);
 
     // Execute database query to insert messages
@@ -327,6 +345,38 @@ const uploadFiles = async (req, res, next) => {
   }
 };
 
+const twilio = require('twilio');
+
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = new twilio(accountSid, authToken);
+
+const sendWhatsappMessageToAdmin = async (msg, sender, type) => {
+  try {
+    // Capitalize the sender's name (first letter uppercase)
+    const capitalizedSender = sender.charAt(0).toUpperCase() + sender.slice(1);
+    let message;
+
+    if (type === "image") {
+      message = await client.messages.create({
+        from: `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`, // Twilio's WhatsApp number
+        to: `whatsapp:+2348125746595`, // Recipient's WhatsApp number
+        body: `*A user named ${capitalizedSender} sent media file(s)*`,
+      });
+    } else {
+      message = await client.messages.create({
+        from: `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`, // Twilio's WhatsApp number
+        to: `whatsapp:+2348125746595`, // Recipient's WhatsApp number
+        body: `*A user named ${capitalizedSender} sent a message:* ${msg}`,
+      });
+    }
+
+    console.log(`Message sent! SID: ${message.sid}`);
+  } catch (error) {
+    console.error("Error sending message:", error);
+  }
+};
+
   
 
-module.exports = { findUsers, findUser, sendMessage, sendMessageMail, sendMessageMailToAdmin, fetchMessages, sendMessageAdmin, fetchAllMessages, editMessageSeenByAdmin, editMessageSeenByUser, uploadFiles };
+module.exports = { findUsers, findUser, sendMessage, sendMessageMail, sendMessageMailToAdmin, fetchMessages, sendMessageAdmin, fetchAllMessages, editMessageSeenByAdmin, editMessageSeenByUser, uploadFiles, sendWhatsappMessageToAdmin };
